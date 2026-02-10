@@ -235,7 +235,7 @@ class MyFuelPortalAPI:
             # Search for "reading" or "tank reading" text (case insensitive)
             for element in soup.find_all(text=re.compile(r'(reading\s+date|last\s+reading|tank\s+reading)', re.IGNORECASE)):
                 parent_text = element.parent.get_text(strip=True) if element.parent else element
-                # Look for date pattern MM/DD/YYYY or similar
+                # Look for date pattern MM/DD/YYYY or MM-DD-YYYY
                 date_match = re.search(r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', str(parent_text))
                 if date_match:
                     reading_date = date_match.group(1)
