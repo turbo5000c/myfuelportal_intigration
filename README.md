@@ -110,4 +110,3 @@ This integration is provided as-is for use with Home Assistant.
 ## Disclaimer
 
 This is an unofficial integration and is not affiliated with MyFuelPortal. Use at your own risk.
-- [Entity Documentation](https://developers.home-assistant.io/docs/core/entity)
