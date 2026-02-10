@@ -6,11 +6,13 @@
         "description": "Enter your MyFuelPortal account credentials",
         "data": {
           "email": "Email",
-          "password": "Password"
+          "password": "Password",
+          "fuel_vendor": "Fuel Vendor"
         },
         "data_description": {
           "email": "Your MyFuelPortal account email address",
-          "password": "Your MyFuelPortal account password"
+          "password": "Your MyFuelPortal account password",
+          "fuel_vendor": "Your fuel vendor subdomain (e.g., 'kbjohnson' from https://kbjohnson.myfuelportal.com)"
         }
       }
     },

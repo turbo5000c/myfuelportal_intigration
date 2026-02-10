@@ -13,7 +13,7 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 
 from .api import MyFuelPortalAPI, AuthenticationError, ConnectionError as APIConnectionError
-from .const import CONF_EMAIL, CONF_PASSWORD, DOMAIN
+from .const import CONF_EMAIL, CONF_PASSWORD, CONF_FUEL_VENDOR, DOMAIN, FUEL_VENDOR_PATTERN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -22,6 +22,13 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_EMAIL): str,
         vol.Required(CONF_PASSWORD): str,
+        vol.Required(CONF_FUEL_VENDOR): vol.All(
+            str,
+            vol.Match(
+                FUEL_VENDOR_PATTERN,
+                msg="Fuel vendor must start and end with alphanumeric characters, and may contain hyphens between them"
+            )
+        ),
     }
 )
 
@@ -31,7 +38,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
 
     Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
     """
-    api = MyFuelPortalAPI(data[CONF_EMAIL], data[CONF_PASSWORD])
+    api = MyFuelPortalAPI(data[CONF_EMAIL], data[CONF_PASSWORD], data[CONF_FUEL_VENDOR])
     
     try:
         # Try to authenticate with the provided credentials

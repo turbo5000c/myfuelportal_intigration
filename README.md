@@ -32,10 +32,24 @@ A Home Assistant custom integration for monitoring propane/fuel tank levels from
 1. Go to **Settings** → **Devices & Services** in Home Assistant
 2. Click **+ ADD INTEGRATION**
 3. Search for **MyFuelPortal**
-4. Enter your MyFuelPortal account credentials:
+4. Enter your MyFuelPortal account information:
    - **Email**: Your MyFuelPortal account email
    - **Password**: Your MyFuelPortal account password
+   - **Fuel Vendor**: Your fuel vendor subdomain
 5. Click **Submit**
+
+### How to Determine Your Fuel Vendor
+
+The fuel vendor is the subdomain in your MyFuelPortal URL. To find it:
+
+1. Log in to your MyFuelPortal account in a web browser
+2. Look at the URL in the address bar
+3. Extract the subdomain (the part before `.myfuelportal.com`)
+
+**Examples:**
+- If your portal URL is `https://kbjohnson.myfuelportal.com`, set **fuel_vendor** to `kbjohnson`
+- If your portal URL is `https://acme.myfuelportal.com`, set **fuel_vendor** to `acme`
+- If your portal URL is `https://propanedelivery.myfuelportal.com`, set **fuel_vendor** to `propanedelivery`
 
 ## Sensors
 
@@ -123,14 +137,12 @@ The integration creates seven sensors for your tank:
 
 ## Known Limitations
 
-- Currently hardcoded to use `kbjohnson.myfuelportal.com` subdomain
 - Only supports single tank monitoring
 - Requires web scraping (no official API available)
 - HTML structure changes could break parsing
 
 ## Future Enhancements
 
-- [ ] Configuration option for custom subdomain
 - [ ] Support for multiple tanks
 - [ ] Additional sensors (price, delivery dates)
 - [ ] Service for manual refresh

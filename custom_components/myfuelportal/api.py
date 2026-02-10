@@ -9,6 +9,8 @@ from typing import Any
 import aiohttp
 from bs4 import BeautifulSoup
 
+from .const import FUEL_VENDOR_PATTERN
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -32,19 +34,28 @@ class MyFuelPortalAPI:
     """API client for MyFuelPortal."""
 
     def __init__(
-        self, email: str, password: str, base_url: str = "https://kbjohnson.myfuelportal.com"
+        self, email: str, password: str, fuel_vendor: str
     ) -> None:
         """Initialize the API client.
 
         Args:
             email: User's email address for authentication
             password: User's password
-            base_url: Base URL for the MyFuelPortal instance
+            fuel_vendor: Fuel vendor subdomain (e.g., 'kbjohnson' for kbjohnson.myfuelportal.com)
 
         """
         self.email = email
         self.password = password
-        self.base_url = base_url.rstrip("/")
+        
+        # Validate fuel_vendor to prevent URL injection
+        if not fuel_vendor or not re.match(FUEL_VENDOR_PATTERN, fuel_vendor):
+            raise ValueError(
+                "Invalid fuel vendor: must start and end with alphanumeric characters, "
+                "and may contain hyphens between them"
+            )
+        
+        self.fuel_vendor = fuel_vendor
+        self.base_url = f"https://{fuel_vendor}.myfuelportal.com"
         self._session: aiohttp.ClientSession | None = None
 
     async def _get_session(self) -> aiohttp.ClientSession:

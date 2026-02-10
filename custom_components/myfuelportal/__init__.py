@@ -11,7 +11,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 
 from .api import MyFuelPortalAPI
-from .const import CONF_EMAIL, CONF_PASSWORD, DOMAIN
+from .const import CONF_EMAIL, CONF_PASSWORD, CONF_FUEL_VENDOR, DOMAIN
 from .coordinator import MyCoordinator
 
 if TYPE_CHECKING:
@@ -40,6 +40,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     api = MyFuelPortalAPI(
         entry.data[CONF_EMAIL],
         entry.data[CONF_PASSWORD],
+        entry.data[CONF_FUEL_VENDOR],
     )
 
     # Authenticate with the API
