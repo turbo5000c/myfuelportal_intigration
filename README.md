@@ -1,132 +1,103 @@
-# Home Assistant Integration Template
+# MyFuelPortal Home Assistant Integration
 
-A complete template repository for creating custom Home Assistant integrations following official Home Assistant developer documentation and best practices.
+A Home Assistant custom integration for monitoring propane/fuel tank levels from MyFuelPortal customer portal.
 
-## Quick Start
+## Features
 
-1. **Use this template**: Click "Use this template" button on GitHub to create your own repository
-2. **Clone your repository**:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/YOUR_INTEGRATION_NAME.git
-   cd YOUR_INTEGRATION_NAME
-   ```
-3. **Replace placeholders**: Search and replace the following placeholders throughout the codebase:
-   - `{INTEGRATION_NAME}` → Your integration domain (lowercase, underscores, e.g., `my_device`)
-   - `{Integration Display Name}` → Your integration friendly name (e.g., `My Device`)
-   - `@turbo5000c` → Your GitHub username
-4. **Rename the integration directory**:
-   ```bash
-   mv custom_components/\{INTEGRATION_NAME\} custom_components/your_integration_name
-   ```
-5. **Implement your integration logic**: Follow the TODO comments in each file
+- 🔐 **Secure Authentication**: Form-based login with CSRF token handling
+- 📊 **Tank Level Monitoring**: Real-time percentage of fuel remaining
+- ⛽ **Gallons Remaining**: Current gallons in your propane tank
+- 🔄 **Automatic Updates**: Updates every 5 minutes
+- 🛡️ **Error Handling**: Robust error handling with automatic re-authentication
 
-## File Structure
+## Installation
 
-```
-.
-├── README.md                          # This file
-├── .gitignore                         # Python and IDE ignores
-├── .github/
-│   └── ISSUE_TEMPLATE/
-│       └── bug_report.md              # Bug report template
-└── custom_components/
-    └── {INTEGRATION_NAME}/            # Your integration directory
-        ├── __init__.py                # Main integration setup
-        ├── manifest.json              # Integration metadata
-        ├── const.py                   # Constants and configuration keys
-        ├── config_flow.py             # Configuration UI flow
-        ├── coordinator.py             # Data update coordinator
-        ├── sensor.py                  # Example sensor platform
-        ├── services.yaml              # Service definitions
-        ├── strings.json               # UI strings for config flow
-        └── translations/
-            └── en.json                # English translations
-```
+### Manual Installation
 
-## Usage Guide
+1. Download this repository
+2. Copy the `custom_components/myfuelportal` directory to your Home Assistant's `custom_components` directory
+3. Restart Home Assistant
 
-### Creating Your Integration
+### HACS Installation
 
-Each file in `custom_components/{INTEGRATION_NAME}/` contains detailed comments and TODO markers to guide you through the implementation:
+1. Add this repository as a custom repository in HACS
+2. Search for "MyFuelPortal" in HACS
+3. Click Install
+4. Restart Home Assistant
 
-#### 1. manifest.json
-- Define your integration's metadata
-- Set dependencies and requirements
-- Configure integration type and IoT class
+## Configuration
 
-#### 2. __init__.py
-- Implement `async_setup_entry()` to initialize your integration
-- Implement `async_unload_entry()` to clean up resources
-- Add platforms (sensor, switch, light, etc.) as needed
+1. Go to **Settings** → **Devices & Services** in Home Assistant
+2. Click **+ ADD INTEGRATION**
+3. Search for **MyFuelPortal**
+4. Enter your MyFuelPortal account credentials:
+   - **Email**: Your MyFuelPortal account email
+   - **Password**: Your MyFuelPortal account password
+5. Click **Submit**
 
-#### 3. const.py
-- Define constants like DOMAIN, configuration keys, and default values
-- Keep all magic strings and numbers here
+## Sensors
 
-#### 4. config_flow.py
-- Implement the configuration UI flow
-- Add validation for user input
-- Handle connection errors gracefully
+The integration creates two sensors for your tank:
 
-#### 5. coordinator.py
-- Implement the `DataUpdateCoordinator` to fetch data from your device/API
-- Handle API calls and error handling
-- Set appropriate update intervals
+### Tank Level
+- **Entity ID**: `sensor.myfuelportal_tank_level`
+- **Unit**: Percentage (%)
+- **Icon**: 🛢️ mdi:propane-tank
+- **Description**: Current fuel level as a percentage (0-100%)
 
-#### 6. sensor.py (Example Platform)
-- Create entity classes for your sensors
-- Implement properties like `native_value`, `device_class`, etc.
-- Add more platform files (switch.py, light.py) as needed
+### Gallons Remaining
+- **Entity ID**: `sensor.myfuelportal_gallons_remaining`
+- **Unit**: Gallons (gal)
+- **Icon**: ⛽ mdi:gauge
+- **Description**: Approximate gallons remaining in tank
 
-#### 7. services.yaml & strings.json
-- Define custom services your integration provides
-- Add UI strings for configuration and error messages
+## Technical Details
 
-### Testing Your Integration
+### Authentication Flow
+1. Fetches login page to extract CSRF token
+2. Submits credentials with token to authenticate
+3. Maintains session cookies for data requests
+4. Automatically re-authenticates if session expires
 
-1. **Copy to Home Assistant**:
-   ```bash
-   cp -r custom_components/{INTEGRATION_NAME} /path/to/homeassistant/custom_components/
-   ```
+### Data Extraction
+- Scrapes HTML from MyFuelPortal website (no REST API available)
+- Parses tank level from progress bar `aria-valuenow` attribute
+- Extracts gallons from "Approximately X gallons in tank" text
+- Uses BeautifulSoup for HTML parsing
 
-2. **Restart Home Assistant**
-
-3. **Add Integration**:
-   - Go to Settings → Devices & Services
-   - Click "+ ADD INTEGRATION"
-   - Search for your integration name
-   - Follow the configuration flow
-
-4. **Check Logs**:
-   ```bash
-   tail -f /path/to/homeassistant/home-assistant.log | grep {INTEGRATION_NAME}
-   ```
-
-### Development Tips
-
-- Use proper type hints throughout your code
-- Follow async/await patterns for all I/O operations
-- Use the coordinator pattern to avoid polling each entity individually
-- Implement proper error handling and logging
-- Test with different error scenarios (network failures, invalid credentials, etc.)
-- Follow Home Assistant's coding standards: https://developers.home-assistant.io/docs/development_guidelines
-
-## Features Included
-
-✅ Complete integration structure following HA best practices  
-✅ Configuration flow with validation and error handling  
-✅ DataUpdateCoordinator for efficient data fetching  
-✅ Example sensor platform  
-✅ Service definitions  
-✅ Proper logging setup  
-✅ Type hints and modern Python syntax (3.11+)  
-✅ Comprehensive TODO comments for easy customization  
-✅ Translations support  
+### Update Frequency
+- **Default**: Every 5 minutes (300 seconds)
+- Helps avoid excessive requests to the portal
 
 ## Requirements
 
 - Home Assistant 2024.1.0 or newer
 - Python 3.11 or newer
+- Active MyFuelPortal account
+
+## Dependencies
+
+- `aiohttp==3.9.1` - Async HTTP client
+- `beautifulsoup4==4.12.2` - HTML parsing
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/turbo5000c/myfuelportal_intigration/issues)
+- **Documentation**: This README
+
+## Known Limitations
+
+- Currently hardcoded to use `kbjohnson.myfuelportal.com` subdomain
+- Only supports single tank monitoring
+- Requires web scraping (no official API available)
+- HTML structure changes could break parsing
+
+## Future Enhancements
+
+- [ ] Configuration option for custom subdomain
+- [ ] Support for multiple tanks
+- [ ] Additional sensors (price, delivery dates, tank capacity)
+- [ ] Service for manual refresh
 
 ## Contributing
 
@@ -134,11 +105,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This template is provided as-is for creating Home Assistant integrations.
+This integration is provided as-is for use with Home Assistant.
 
-## Resources
+## Disclaimer
 
-- [Home Assistant Developer Docs](https://developers.home-assistant.io/)
-- [Integration Development](https://developers.home-assistant.io/docs/creating_integration_manifest)
-- [Configuration Flow](https://developers.home-assistant.io/docs/config_entries_config_flow_handler)
-- [Entity Documentation](https://developers.home-assistant.io/docs/core/entity)
+This is an unofficial integration and is not affiliated with MyFuelPortal. Use at your own risk.

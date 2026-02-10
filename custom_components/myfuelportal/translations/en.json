@@ -1,0 +1,26 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to MyFuelPortal",
+        "description": "Enter your MyFuelPortal account credentials",
+        "data": {
+          "email": "Email",
+          "password": "Password"
+        },
+        "data_description": {
+          "email": "Your MyFuelPortal account email address",
+          "password": "Your MyFuelPortal account password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to MyFuelPortal. Please check your internet connection and try again.",
+      "invalid_auth": "Invalid email or password. Please check your credentials.",
+      "unknown": "An unexpected error occurred. Please check the logs for more details."
+    },
+    "abort": {
+      "already_configured": "This MyFuelPortal account is already configured."
+    }
+  }
+}
