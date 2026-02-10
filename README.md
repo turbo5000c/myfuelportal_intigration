@@ -37,7 +37,7 @@ A Home Assistant custom integration for monitoring propane/fuel tank levels from
 
 ## Sensors
 
-The integration creates two sensors for your tank:
+The integration creates three sensors for your tank:
 
 ### Tank Level
 - **Entity ID**: `sensor.myfuelportal_tank_level`
@@ -51,6 +51,12 @@ The integration creates two sensors for your tank:
 - **Icon**: ⛽ mdi:gauge
 - **Description**: Approximate gallons remaining in tank
 
+### Tank Capacity
+- **Entity ID**: `sensor.myfuelportal_tank_capacity`
+- **Unit**: Gallons (gal)
+- **Icon**: 🛢️ mdi:propane-tank
+- **Description**: Total capacity of the propane tank
+
 ## Technical Details
 
 ### Authentication Flow
@@ -63,6 +69,7 @@ The integration creates two sensors for your tank:
 - Scrapes HTML from MyFuelPortal website (no REST API available)
 - Parses tank level from progress bar `aria-valuenow` attribute
 - Extracts gallons from "Approximately X gallons in tank" text
+- Extracts tank capacity from text like "125 Gal Propane"
 - Uses BeautifulSoup for HTML parsing
 
 ### Update Frequency
@@ -96,7 +103,7 @@ The integration creates two sensors for your tank:
 
 - [ ] Configuration option for custom subdomain
 - [ ] Support for multiple tanks
-- [ ] Additional sensors (price, delivery dates, tank capacity)
+- [ ] Additional sensors (price, delivery dates)
 - [ ] Service for manual refresh
 
 ## Contributing

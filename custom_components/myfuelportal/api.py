@@ -195,15 +195,36 @@ class MyFuelPortalAPI:
                 _LOGGER.warning("Could not find gallons remaining in page")
                 gallons_remaining = 0.0
 
+            # Extract tank capacity from text
+            # Look for pattern like "125 Gal Propane" or "500 Gallon Propane"
+            tank_capacity = None
+            # Search all text for capacity pattern
+            capacity_pattern = re.compile(r'(\d+\.?\d*)\s*(Gal|Gallon)', re.IGNORECASE)
+            for element in soup.find_all(text=capacity_pattern):
+                text = element.strip()
+                match = capacity_pattern.search(text)
+                if match:
+                    try:
+                        tank_capacity = float(match.group(1))
+                        break
+                    except ValueError:
+                        pass
+
+            if tank_capacity is None:
+                _LOGGER.warning("Could not find tank capacity in page")
+                tank_capacity = 0.0
+
             _LOGGER.debug(
-                "Parsed tank data: level=%s%%, gallons=%s",
+                "Parsed tank data: level=%s%%, gallons=%s, capacity=%s",
                 tank_level_percent,
                 gallons_remaining,
+                tank_capacity,
             )
 
             return {
                 "tank_level_percent": tank_level_percent,
                 "gallons_remaining": gallons_remaining,
+                "tank_capacity": tank_capacity,
             }
 
         except aiohttp.ClientError as err:
