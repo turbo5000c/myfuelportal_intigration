@@ -77,7 +77,7 @@ The integration creates two sensors for your tank:
 
 ## Dependencies
 
-- `aiohttp==3.9.1` - Async HTTP client
+- `aiohttp` - Async HTTP client (provided by Home Assistant Core)
 - `beautifulsoup4==4.12.2` - HTML parsing
 
 ## Support
