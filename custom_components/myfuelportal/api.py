@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from typing import Any
 
 import aiohttp
@@ -182,7 +183,6 @@ class MyFuelPortalAPI:
                 text = div.get_text(strip=True)
                 if "gallons in tank" in text.lower():
                     # Extract the number
-                    import re
                     match = re.search(r"(\d+\.?\d*)\s*gallons", text, re.IGNORECASE)
                     if match:
                         try:
