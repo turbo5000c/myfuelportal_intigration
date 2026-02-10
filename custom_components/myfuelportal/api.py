@@ -230,36 +230,38 @@ class MyFuelPortalAPI:
                 _LOGGER.debug("Could not find last delivery date in page")
 
             # Extract current fuel price
-            # Look for price patterns like "$2.50" or "$2.50/gal" or "Price: $2.50"
+            # Look for price patterns like "$3.1400 / gal" or "$2.50/gal"
             current_price = None
-            # Search for price in various formats
+            # Search for price in various formats - look at all text content
             price_pattern = re.compile(r'\$\s*(\d+(?:\.\d+)?)', re.IGNORECASE)
+            
+            # First, search all text elements that contain a dollar sign
             for element in soup.find_all(text=price_pattern):
                 text = element.strip()
-                # Look for price context (current, price, per, gal, gallon)
-                if any(keyword in text.lower() for keyword in ['price', 'current', 'per', 'gal']):
+                # Try to get parent's full text to get context
+                parent_text = element.parent.get_text(strip=True) if element.parent else text
+                
+                # Look for price context (current, price, per, gal, gallon, /)
+                if any(keyword in parent_text.lower() for keyword in ['price', 'current', 'per', 'gal', '/']):
                     match = price_pattern.search(text)
                     if match:
                         try:
                             current_price = float(match.group(1))
+                            _LOGGER.debug("Found price in text element: %s (parent: %s)", text, parent_text)
                             break
                         except ValueError:
                             pass
             
-            # If not found with context, try finding any price-like value near "price" text
+            # If not found, search all elements for dollar amounts near "gal" or "price"
             if current_price is None:
-                for element in soup.find_all(text=re.compile(r'price', re.IGNORECASE)):
-                    # Search nearby elements for price value
-                    parent = element.parent
-                    if parent:
-                        parent_text = parent.get_text(strip=True)
-                        match = price_pattern.search(parent_text)
-                        if match:
-                            try:
-                                current_price = float(match.group(1))
-                                break
-                            except ValueError:
-                                pass
+                all_text = soup.get_text()
+                match = re.search(r'\$\s*(\d+(?:\.\d+)?)\s*(?:/\s*gal|per\s*gal)', all_text, re.IGNORECASE)
+                if match:
+                    try:
+                        current_price = float(match.group(1))
+                        _LOGGER.debug("Found price in full text: %s", match.group(0))
+                    except ValueError:
+                        pass
 
             if current_price is None:
                 _LOGGER.debug("Could not find current price in page")
