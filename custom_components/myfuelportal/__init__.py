@@ -6,12 +6,12 @@ import logging
 from typing import TYPE_CHECKING
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_PASSWORD, Platform
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 
 from .api import MyFuelPortalAPI
-from .const import CONF_EMAIL, DOMAIN
+from .const import CONF_EMAIL, CONF_PASSWORD, DOMAIN
 from .coordinator import MyCoordinator
 
 if TYPE_CHECKING:
