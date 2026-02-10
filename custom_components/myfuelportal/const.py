@@ -19,6 +19,7 @@ DEFAULT_UPDATE_INTERVAL = 7200  # seconds (2 hours)
 ATTR_TANK_LEVEL = "tank_level_percent"
 ATTR_GALLONS_REMAINING = "gallons_remaining"
 ATTR_TANK_CAPACITY = "tank_capacity"
+ATTR_FUEL_TYPE = "fuel_type"
 ATTR_LAST_DELIVERY_DATE = "last_delivery_date"
 ATTR_READING_DATE = "reading_date"
 ATTR_CURRENT_PRICE = "current_price"

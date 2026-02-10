@@ -195,24 +195,42 @@ class MyFuelPortalAPI:
                 _LOGGER.warning("Could not find gallons remaining in page")
                 gallons_remaining = 0.0
 
-            # Extract tank capacity from text
-            # Look for pattern like "125 Gal Propane" or "500 Gallon Propane"
+            # Extract tank capacity and fuel type from text
+            # Look for pattern like "125 Gal Propane" or "500 Gallon Propane" or "125 gal. | PROPANE"
             tank_capacity = None
+            fuel_type = None
             # Search all text for capacity pattern
-            capacity_pattern = re.compile(r'(\d+\.?\d*)\s*(Gal|Gallon)', re.IGNORECASE)
+            capacity_pattern = re.compile(r'(\d+\.?\d*)\s*(Gal\.?|Gallon)(?:\s*\|\s*|\s+)(\w+)', re.IGNORECASE)
             for element in soup.find_all(text=capacity_pattern):
                 text = element.strip()
                 match = capacity_pattern.search(text)
                 if match:
                     try:
                         tank_capacity = float(match.group(1))
+                        fuel_type = match.group(3).upper() if match.group(3) else None
                         break
-                    except ValueError:
+                    except (ValueError, IndexError):
                         pass
+
+            # If not found with fuel type, try just capacity
+            if tank_capacity is None:
+                simple_capacity_pattern = re.compile(r'(\d+\.?\d*)\s*(Gal\.?|Gallon)', re.IGNORECASE)
+                for element in soup.find_all(text=simple_capacity_pattern):
+                    text = element.strip()
+                    match = simple_capacity_pattern.search(text)
+                    if match:
+                        try:
+                            tank_capacity = float(match.group(1))
+                            break
+                        except ValueError:
+                            pass
 
             if tank_capacity is None:
                 _LOGGER.warning("Could not find tank capacity in page")
                 tank_capacity = 0.0
+
+            if fuel_type is None:
+                _LOGGER.debug("Could not find fuel type in page")
 
             # Extract last delivery date
             # Look for pattern like "Last Delivery: 01/15/2024" or similar date format
@@ -282,10 +300,11 @@ class MyFuelPortalAPI:
                 _LOGGER.debug("Could not find current price in page")
 
             _LOGGER.debug(
-                "Parsed tank data: level=%s%%, gallons=%s, capacity=%s, last_delivery=%s, reading_date=%s, price=%s",
+                "Parsed tank data: level=%s%%, gallons=%s, capacity=%s, fuel_type=%s, last_delivery=%s, reading_date=%s, price=%s",
                 tank_level_percent,
                 gallons_remaining,
                 tank_capacity,
+                fuel_type,
                 last_delivery_date,
                 reading_date,
                 current_price,
@@ -295,6 +314,7 @@ class MyFuelPortalAPI:
                 "tank_level_percent": tank_level_percent,
                 "gallons_remaining": gallons_remaining,
                 "tank_capacity": tank_capacity,
+                "fuel_type": fuel_type,
                 "last_delivery_date": last_delivery_date,
                 "reading_date": reading_date,
                 "current_price": current_price,

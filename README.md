@@ -7,6 +7,7 @@ A Home Assistant custom integration for monitoring propane/fuel tank levels from
 - 🔐 **Secure Authentication**: Form-based login with CSRF token handling
 - 📊 **Tank Level Monitoring**: Real-time percentage of fuel remaining
 - ⛽ **Gallons Remaining**: Current gallons in your propane tank
+- 🛢️ **Fuel Type**: Type of fuel in the tank (e.g., Propane)
 - 💰 **Current Price**: Current fuel price per gallon
 - 🔄 **Automatic Updates**: Updates every 5 minutes
 - 🛡️ **Error Handling**: Robust error handling with automatic re-authentication
@@ -38,7 +39,7 @@ A Home Assistant custom integration for monitoring propane/fuel tank levels from
 
 ## Sensors
 
-The integration creates six sensors for your tank:
+The integration creates seven sensors for your tank:
 
 ### Tank Level
 - **Entity ID**: `sensor.myfuelportal_tank_level`
@@ -57,6 +58,12 @@ The integration creates six sensors for your tank:
 - **Unit**: Gallons (gal)
 - **Icon**: 🛢️ mdi:propane-tank
 - **Description**: Total capacity of the propane tank
+
+### Fuel Type
+- **Entity ID**: `sensor.myfuelportal_fuel_type`
+- **Unit**: None (string)
+- **Icon**: ⛽ mdi:fuel
+- **Description**: Type of fuel in the tank (e.g., PROPANE)
 
 ### Last Delivery Date
 - **Entity ID**: `sensor.myfuelportal_last_delivery_date`
@@ -88,7 +95,7 @@ The integration creates six sensors for your tank:
 - Scrapes HTML from MyFuelPortal website (no REST API available)
 - Parses tank level from progress bar `aria-valuenow` attribute
 - Extracts gallons from "Approximately X gallons in tank" text
-- Extracts tank capacity from text like "125 Gal Propane"
+- Extracts tank capacity and fuel type from text like "125 Gal Propane" or "125 gal. | PROPANE"
 - Extracts last delivery date from text patterns on the Tank page
 - Extracts tank reading date from text patterns on the Tank page
 - Extracts current fuel price from price-related text on the Tank page
