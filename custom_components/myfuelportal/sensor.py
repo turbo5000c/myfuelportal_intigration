@@ -203,7 +203,7 @@ class CurrentPriceSensor(CoordinatorEntity[MyCoordinator], SensorEntity):
 
         # Set sensor properties
         self._attr_state_class = SensorStateClass.MEASUREMENT
-        self._attr_native_unit_of_measurement = "$ / gal"
+        self._attr_native_unit_of_measurement = "$/gal"
         self._attr_icon = "mdi:currency-usd"
 
         # Set the device info to group entities under a device

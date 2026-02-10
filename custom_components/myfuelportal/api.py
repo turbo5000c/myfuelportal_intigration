@@ -233,7 +233,7 @@ class MyFuelPortalAPI:
             # Look for price patterns like "$2.50" or "$2.50/gal" or "Price: $2.50"
             current_price = None
             # Search for price in various formats
-            price_pattern = re.compile(r'\$\s*(\d+\.?\d*)', re.IGNORECASE)
+            price_pattern = re.compile(r'\$\s*(\d+(?:\.\d+)?)', re.IGNORECASE)
             for element in soup.find_all(text=price_pattern):
                 text = element.strip()
                 # Look for price context (current, price, per, gal, gallon)

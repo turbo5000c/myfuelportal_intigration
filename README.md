@@ -66,7 +66,7 @@ The integration creates five sensors for your tank:
 
 ### Current Price
 - **Entity ID**: `sensor.myfuelportal_current_price`
-- **Unit**: $ / gal
+- **Unit**: $/gal
 - **Icon**: 💰 mdi:currency-usd
 - **Description**: Current fuel price per gallon
 
