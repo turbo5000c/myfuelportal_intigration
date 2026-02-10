@@ -7,7 +7,7 @@
   "issue_tracker": "https://github.com/turbo5000c/myfuelportal_intigration/issues",
   "integration_type": "device",
   "iot_class": "cloud_polling",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "dependencies": [],
   "requirements": [
     "beautifulsoup4==4.12.2"

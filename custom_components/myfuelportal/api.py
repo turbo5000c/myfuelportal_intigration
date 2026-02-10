@@ -229,12 +229,50 @@ class MyFuelPortalAPI:
             if last_delivery_date is None:
                 _LOGGER.debug("Could not find last delivery date in page")
 
+            # Extract current fuel price
+            # Look for price patterns like "$3.1400 / gal" or "$2.50/gal"
+            current_price = None
+            # Search for price in various formats - look at all text content
+            price_pattern = re.compile(r'\$\s*(\d+(?:\.\d+)?)', re.IGNORECASE)
+            
+            # First, search all text elements that contain a dollar sign
+            for element in soup.find_all(text=price_pattern):
+                text = element.strip()
+                # Try to get parent's full text to get context
+                parent_text = element.parent.get_text(strip=True) if element.parent else text
+                
+                # Look for price context (current, price, per, gal, gallon, /)
+                if any(keyword in parent_text.lower() for keyword in ['price', 'current', 'per', 'gal', '/']):
+                    match = price_pattern.search(text)
+                    if match:
+                        try:
+                            current_price = float(match.group(1))
+                            _LOGGER.debug("Found price in text element: %s (parent: %s)", text, parent_text)
+                            break
+                        except ValueError:
+                            pass
+            
+            # If not found, search all elements for dollar amounts near "gal" or "price"
+            if current_price is None:
+                all_text = soup.get_text()
+                match = re.search(r'\$\s*(\d+(?:\.\d+)?)\s*(?:/\s*gal|per\s*gal)', all_text, re.IGNORECASE)
+                if match:
+                    try:
+                        current_price = float(match.group(1))
+                        _LOGGER.debug("Found price in full text: %s", match.group(0))
+                    except ValueError:
+                        pass
+
+            if current_price is None:
+                _LOGGER.debug("Could not find current price in page")
+
             _LOGGER.debug(
-                "Parsed tank data: level=%s%%, gallons=%s, capacity=%s, last_delivery=%s",
+                "Parsed tank data: level=%s%%, gallons=%s, capacity=%s, last_delivery=%s, price=%s",
                 tank_level_percent,
                 gallons_remaining,
                 tank_capacity,
                 last_delivery_date,
+                current_price,
             )
 
             return {
@@ -242,6 +280,7 @@ class MyFuelPortalAPI:
                 "gallons_remaining": gallons_remaining,
                 "tank_capacity": tank_capacity,
                 "last_delivery_date": last_delivery_date,
+                "current_price": current_price,
             }
 
         except aiohttp.ClientError as err:
