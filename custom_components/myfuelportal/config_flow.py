@@ -26,7 +26,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
             str,
             vol.Match(
                 FUEL_VENDOR_PATTERN,
-                msg="Fuel vendor must contain only alphanumeric characters and hyphens"
+                msg="Fuel vendor must start and end with alphanumeric characters, and may contain hyphens between them"
             )
         ),
     }

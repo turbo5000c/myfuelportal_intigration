@@ -50,7 +50,8 @@ class MyFuelPortalAPI:
         # Validate fuel_vendor to prevent URL injection
         if not fuel_vendor or not re.match(FUEL_VENDOR_PATTERN, fuel_vendor):
             raise ValueError(
-                "Invalid fuel vendor: must contain only alphanumeric characters and hyphens"
+                "Invalid fuel vendor: must start and end with alphanumeric characters, "
+                "and may contain hyphens between them"
             )
         
         self.fuel_vendor = fuel_vendor
