@@ -229,12 +229,48 @@ class MyFuelPortalAPI:
             if last_delivery_date is None:
                 _LOGGER.debug("Could not find last delivery date in page")
 
+            # Extract current fuel price
+            # Look for price patterns like "$2.50" or "$2.50/gal" or "Price: $2.50"
+            current_price = None
+            # Search for price in various formats
+            price_pattern = re.compile(r'\$\s*(\d+\.?\d*)', re.IGNORECASE)
+            for element in soup.find_all(text=price_pattern):
+                text = element.strip()
+                # Look for price context (current, price, per, gal, gallon)
+                if any(keyword in text.lower() for keyword in ['price', 'current', 'per', 'gal']):
+                    match = price_pattern.search(text)
+                    if match:
+                        try:
+                            current_price = float(match.group(1))
+                            break
+                        except ValueError:
+                            pass
+            
+            # If not found with context, try finding any price-like value near "price" text
+            if current_price is None:
+                for element in soup.find_all(text=re.compile(r'price', re.IGNORECASE)):
+                    # Search nearby elements for price value
+                    parent = element.parent
+                    if parent:
+                        parent_text = parent.get_text(strip=True)
+                        match = price_pattern.search(parent_text)
+                        if match:
+                            try:
+                                current_price = float(match.group(1))
+                                break
+                            except ValueError:
+                                pass
+
+            if current_price is None:
+                _LOGGER.debug("Could not find current price in page")
+
             _LOGGER.debug(
-                "Parsed tank data: level=%s%%, gallons=%s, capacity=%s, last_delivery=%s",
+                "Parsed tank data: level=%s%%, gallons=%s, capacity=%s, last_delivery=%s, price=%s",
                 tank_level_percent,
                 gallons_remaining,
                 tank_capacity,
                 last_delivery_date,
+                current_price,
             )
 
             return {
@@ -242,6 +278,7 @@ class MyFuelPortalAPI:
                 "gallons_remaining": gallons_remaining,
                 "tank_capacity": tank_capacity,
                 "last_delivery_date": last_delivery_date,
+                "current_price": current_price,
             }
 
         except aiohttp.ClientError as err:
