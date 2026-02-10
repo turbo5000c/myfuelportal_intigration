@@ -214,17 +214,34 @@ class MyFuelPortalAPI:
                 _LOGGER.warning("Could not find tank capacity in page")
                 tank_capacity = 0.0
 
+            # Extract last delivery date
+            # Look for pattern like "Last Delivery: 01/15/2024" or similar date format
+            last_delivery_date = None
+            # Search for "last delivery" text (case insensitive)
+            for element in soup.find_all(text=re.compile(r'last\s+delivery', re.IGNORECASE)):
+                parent_text = element.parent.get_text(strip=True) if element.parent else element
+                # Look for date pattern MM/DD/YYYY or similar
+                date_match = re.search(r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', str(parent_text))
+                if date_match:
+                    last_delivery_date = date_match.group(1)
+                    break
+
+            if last_delivery_date is None:
+                _LOGGER.debug("Could not find last delivery date in page")
+
             _LOGGER.debug(
-                "Parsed tank data: level=%s%%, gallons=%s, capacity=%s",
+                "Parsed tank data: level=%s%%, gallons=%s, capacity=%s, last_delivery=%s",
                 tank_level_percent,
                 gallons_remaining,
                 tank_capacity,
+                last_delivery_date,
             )
 
             return {
                 "tank_level_percent": tank_level_percent,
                 "gallons_remaining": gallons_remaining,
                 "tank_capacity": tank_capacity,
+                "last_delivery_date": last_delivery_date,
             }
 
         except aiohttp.ClientError as err:
