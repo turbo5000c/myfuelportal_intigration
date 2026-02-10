@@ -198,10 +198,11 @@ class MyFuelPortalAPI:
             # Extract tank capacity from text
             # Look for pattern like "125 Gal Propane" or "500 Gallon Propane"
             tank_capacity = None
-            for element in soup.find_all(text=re.compile(r'\d+\s*(Gal|Gallon)', re.IGNORECASE)):
+            # Search all text for capacity pattern
+            capacity_pattern = re.compile(r'(\d+\.?\d*)\s*(Gal|Gallon)', re.IGNORECASE)
+            for element in soup.find_all(text=capacity_pattern):
                 text = element.strip()
-                # Extract the capacity number
-                match = re.search(r'(\d+\.?\d*)\s*(Gal|Gallon)', text, re.IGNORECASE)
+                match = capacity_pattern.search(text)
                 if match:
                     try:
                         tank_capacity = float(match.group(1))

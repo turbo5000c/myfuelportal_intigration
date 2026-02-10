@@ -128,8 +128,7 @@ class TankCapacitySensor(CoordinatorEntity[MyCoordinator], SensorEntity):
         # Set the entity name
         self._attr_name = "Tank Capacity"
         
-        # Set sensor properties
-        self._attr_state_class = SensorStateClass.MEASUREMENT
+        # Set sensor properties (no state class as tank capacity is static)
         self._attr_native_unit_of_measurement = UnitOfVolume.GALLONS
         self._attr_icon = "mdi:propane-tank"
         
