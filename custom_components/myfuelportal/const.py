@@ -8,6 +8,7 @@ DOMAIN = "myfuelportal"
 # Configuration keys
 CONF_EMAIL = "email"
 CONF_PASSWORD = "password"
+CONF_FUEL_VENDOR = "fuel_vendor"
 
 # Default values
 DEFAULT_NAME = "MyFuelPortal"
