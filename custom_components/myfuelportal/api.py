@@ -207,9 +207,9 @@ class MyFuelPortalAPI:
                 if match:
                     try:
                         tank_capacity = float(match.group(1))
-                        fuel_type = match.group(3).upper() if match.group(3) else None
+                        fuel_type = match.group(3).upper()
                         break
-                    except (ValueError, IndexError):
+                    except ValueError:
                         pass
 
             # If not found with fuel type, try just capacity
