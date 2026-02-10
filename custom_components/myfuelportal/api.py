@@ -9,6 +9,8 @@ from typing import Any
 import aiohttp
 from bs4 import BeautifulSoup
 
+from .const import FUEL_VENDOR_PATTERN
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -46,7 +48,7 @@ class MyFuelPortalAPI:
         self.password = password
         
         # Validate fuel_vendor to prevent URL injection
-        if not fuel_vendor or not re.match(r'^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$', fuel_vendor):
+        if not fuel_vendor or not re.match(FUEL_VENDOR_PATTERN, fuel_vendor):
             raise ValueError(
                 "Invalid fuel vendor: must contain only alphanumeric characters and hyphens"
             )

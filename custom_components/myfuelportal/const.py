@@ -16,6 +16,9 @@ DEFAULT_NAME = "MyFuelPortal"
 #DEFAULT_UPDATE_INTERVAL = 300  # seconds (5 minutes)
 DEFAULT_UPDATE_INTERVAL = 7200  # seconds (2 hours)
 
+# Validation patterns
+FUEL_VENDOR_PATTERN = r'^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$'
+
 # Sensor attribute keys
 ATTR_TANK_LEVEL = "tank_level_percent"
 ATTR_GALLONS_REMAINING = "gallons_remaining"

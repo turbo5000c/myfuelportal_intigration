@@ -13,7 +13,7 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 
 from .api import MyFuelPortalAPI, AuthenticationError, ConnectionError as APIConnectionError
-from .const import CONF_EMAIL, CONF_PASSWORD, CONF_FUEL_VENDOR, DOMAIN
+from .const import CONF_EMAIL, CONF_PASSWORD, CONF_FUEL_VENDOR, DOMAIN, FUEL_VENDOR_PATTERN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
         vol.Required(CONF_FUEL_VENDOR): vol.All(
             str,
             vol.Match(
-                r'^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$',
+                FUEL_VENDOR_PATTERN,
                 msg="Fuel vendor must contain only alphanumeric characters and hyphens"
             )
         ),
