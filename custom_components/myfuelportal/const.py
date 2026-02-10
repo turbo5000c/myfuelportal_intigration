@@ -11,7 +11,9 @@ CONF_PASSWORD = "password"
 
 # Default values
 DEFAULT_NAME = "MyFuelPortal"
-DEFAULT_UPDATE_INTERVAL = 300  # seconds (5 minutes)
+
+#DEFAULT_UPDATE_INTERVAL = 300  # seconds (5 minutes)
+DEFAULT_UPDATE_INTERVAL = 7200  # seconds (2 hours)
 
 # Sensor attribute keys
 ATTR_TANK_LEVEL = "tank_level_percent"
