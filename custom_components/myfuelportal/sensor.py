@@ -158,16 +158,16 @@ class LastDeliveryDateSensor(CoordinatorEntity[MyCoordinator], SensorEntity):
     def __init__(self, coordinator: MyCoordinator, entry: ConfigEntry) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
-        
+
         # Set the unique ID for the entity
         self._attr_unique_id = f"{entry.entry_id}_last_delivery_date"
-        
+
         # Set the entity name
         self._attr_name = "Last Delivery Date"
-        
+
         # Set sensor properties (no state class or unit for date strings)
         self._attr_icon = "mdi:calendar-clock"
-        
+
         # Set the device info to group entities under a device
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},

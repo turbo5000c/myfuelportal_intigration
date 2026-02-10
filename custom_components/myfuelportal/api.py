@@ -225,7 +225,7 @@ class MyFuelPortalAPI:
                 if date_match:
                     last_delivery_date = date_match.group(1)
                     break
-            
+
             if last_delivery_date is None:
                 _LOGGER.debug("Could not find last delivery date in page")
 
