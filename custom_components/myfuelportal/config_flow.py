@@ -22,7 +22,13 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_EMAIL): str,
         vol.Required(CONF_PASSWORD): str,
-        vol.Required(CONF_FUEL_VENDOR): str,
+        vol.Required(CONF_FUEL_VENDOR): vol.All(
+            str,
+            vol.Match(
+                r'^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$',
+                msg="Fuel vendor must contain only alphanumeric characters and hyphens"
+            )
+        ),
     }
 )
 

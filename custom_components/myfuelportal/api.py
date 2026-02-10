@@ -44,6 +44,13 @@ class MyFuelPortalAPI:
         """
         self.email = email
         self.password = password
+        
+        # Validate fuel_vendor to prevent URL injection
+        if not fuel_vendor or not re.match(r'^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$', fuel_vendor):
+            raise ValueError(
+                "Invalid fuel vendor: must contain only alphanumeric characters and hyphens"
+            )
+        
         self.fuel_vendor = fuel_vendor
         self.base_url = f"https://{fuel_vendor}.myfuelportal.com"
         self._session: aiohttp.ClientSession | None = None
