@@ -14,7 +14,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import ATTR_GALLONS_REMAINING, ATTR_TANK_LEVEL, DOMAIN
+from .const import ATTR_GALLONS_REMAINING, ATTR_TANK_LEVEL, ATTR_TANK_CAPACITY, DOMAIN
 from .coordinator import MyCoordinator
 
 if TYPE_CHECKING:
@@ -35,6 +35,7 @@ async def async_setup_entry(
     sensors = [
         TankLevelSensor(coordinator, entry),
         GallonsRemainingSensor(coordinator, entry),
+        TankCapacitySensor(coordinator, entry),
     ]
 
     async_add_entities(sensors)
@@ -107,6 +108,43 @@ class GallonsRemainingSensor(CoordinatorEntity[MyCoordinator], SensorEntity):
     def native_value(self) -> float | None:
         """Return the state of the sensor."""
         return self.coordinator.data.get(ATTR_GALLONS_REMAINING)
+
+    @property
+    def available(self) -> bool:
+        """Return True if entity is available."""
+        return self.coordinator.last_update_success
+
+
+class TankCapacitySensor(CoordinatorEntity[MyCoordinator], SensorEntity):
+    """Representation of tank capacity sensor."""
+
+    def __init__(self, coordinator: MyCoordinator, entry: ConfigEntry) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator)
+        
+        # Set the unique ID for the entity
+        self._attr_unique_id = f"{entry.entry_id}_tank_capacity"
+        
+        # Set the entity name
+        self._attr_name = "Tank Capacity"
+        
+        # Set sensor properties
+        self._attr_state_class = SensorStateClass.MEASUREMENT
+        self._attr_native_unit_of_measurement = UnitOfVolume.GALLONS
+        self._attr_icon = "mdi:propane-tank"
+        
+        # Set the device info to group entities under a device
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, entry.entry_id)},
+            "name": entry.title,
+            "manufacturer": "MyFuelPortal",
+            "model": "Propane Tank Monitor",
+        }
+
+    @property
+    def native_value(self) -> float | None:
+        """Return the state of the sensor."""
+        return self.coordinator.data.get(ATTR_TANK_CAPACITY)
 
     @property
     def available(self) -> bool:
